@@ -13,5 +13,6 @@ RUN pip install -r requirements.txt
 USER train
 COPY opt/ /home/train/opt/
 WORKDIR /home/train/opt/dl/code
+USER root
 ENTRYPOINT ["python3"]
 CMD ["train"]
