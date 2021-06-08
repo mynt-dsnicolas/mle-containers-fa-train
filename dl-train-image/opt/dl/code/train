@@ -1,0 +1,26 @@
+import torch as th
+from fastai.vision.all import *
+from fastai.vision.widgets import *
+from pathlib import Path
+
+path = Path('/home/train/opt/dl/input/raw/')
+
+print('Training model...')
+actors = DataBlock(
+    blocks=(ImageBlock, CategoryBlock), #Specify the independent variable (Images) and dependent variable (Categories/Classes)
+    get_items=get_image_files, # Specify how to get the data
+    splitter=RandomSplitter(valid_pct=0.2, seed=42), # Specify how to split training and validation data
+    get_y=parent_label, # The label is specified as the folder that contains the image
+    item_tfms=Resize(256, method=ResizeMethod.Pad), # Resize each image to 256x256 pixels
+    batch_tfms=aug_transforms(mult=2) # Specify transforms that are commonly used for image classification tasks
+)
+
+dls = actors.dataloaders(path)
+print('Model training complete!')
+
+learn = cnn_learner(dls, resnet18, metrics=error_rate)
+print('Finetuning model...')
+learn.fine_tune(5)
+print('Finetuning complete!')
+
+learn.export('/home/train/opt/dl/model/')
