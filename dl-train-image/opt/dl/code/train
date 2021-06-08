@@ -20,7 +20,10 @@ print('Model training complete!')
 
 learn = cnn_learner(dls, resnet18, metrics=error_rate)
 print('Finetuning model...')
-learn.fine_tune(5)
+learn.fine_tune(50)
 print('Finetuning complete!')
 
+print('Saving model...')
 learn.export('/home/train/opt/dl/model/')
+print('Saving complete!')
+print('Model saved in /home/train/opt/dl/model/')
